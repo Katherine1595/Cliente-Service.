@@ -55,12 +55,12 @@ public class GlobalExceptionHandler {
 
         Map<String, String> errores = new HashMap<>();
         ex.getBindingResult()
-          .getAllErrors()
-          .forEach(error -> {
-              String campo   = ((FieldError) error).getField();
-              String mensaje = error.getDefaultMessage();
-              errores.put(campo, mensaje);
-          });
+                .getAllErrors()
+                .forEach(error -> {
+                    String campo   = ((FieldError) error).getField();
+                    String mensaje = error.getDefaultMessage();
+                    errores.put(campo, mensaje);
+                });
 
         log.debug("Errores de validación: {}", errores);
 

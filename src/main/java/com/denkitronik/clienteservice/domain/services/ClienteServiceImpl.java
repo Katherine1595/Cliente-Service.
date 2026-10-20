@@ -42,7 +42,8 @@ public class ClienteServiceImpl implements IClienteService {
     @Transactional
     public Cliente save(Cliente cliente) {
         try {
-            cliente.setRegion(resolverRegion(cliente.getRegion()));
+            // Un POST siempre crea: se ignora el id recibido (evita merge de un id inexistente -> 500)
+            cliente.setId(null);
             return clienteDao.save(cliente);
         } catch (DataIntegrityViolationException ex) {
             throw new ClienteServiceException(
@@ -61,7 +62,7 @@ public class ClienteServiceImpl implements IClienteService {
         actual.setApellido(cliente.getApellido());
         actual.setEmail(cliente.getEmail());
         actual.setFoto(cliente.getFoto());
-        actual.setRegion(resolverRegion(cliente.getRegion()));
+        actual.setRegion(cliente.getRegion());
         return clienteDao.save(actual);
     }
 
@@ -78,13 +79,5 @@ public class ClienteServiceImpl implements IClienteService {
     @Transactional(readOnly = true)
     public List<Region> findAllRegiones() {
         return clienteDao.findAllRegiones();
-    }
-
-    // Región enviada sin id o inexistente: se guarda el cliente sin región en vez de fallar con 500
-    private Region resolverRegion(Region region) {
-        if (region == null || region.getId() == null) {
-            return null;
-        }
-        return clienteDao.findRegionById(region.getId()).orElse(null);
     }
 }

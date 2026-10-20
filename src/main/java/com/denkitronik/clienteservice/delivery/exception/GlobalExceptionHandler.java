@@ -1,6 +1,5 @@
 package com.denkitronik.clienteservice.delivery.exception;
 
-import com.denkitronik.clienteservice.domain.exception.ClienteDuplicadoException;
 import com.denkitronik.clienteservice.domain.exception.ClienteNotFoundException;
 import com.denkitronik.clienteservice.domain.exception.ClienteServiceException;
 import org.slf4j.Logger;
@@ -34,21 +33,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
     }
 
-    // ── 409 Conflict (email duplicado) ────────────────────────
-    @ExceptionHandler(ClienteDuplicadoException.class)
-    public ResponseEntity<ApiErrorResponse> manejarDuplicado(
-            ClienteDuplicadoException ex) {
-
-        log.warn("Cliente duplicado: {}", ex.getMessage());
-
-        ApiErrorResponse respuesta = new ApiErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                "Conflict",
-                ex.getMessage()
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
-    }
-
     // ── 500 Internal Server Error ─────────────────────────────
     @ExceptionHandler(ClienteServiceException.class)
     public ResponseEntity<ApiErrorResponse> manejarServiceException(
@@ -71,12 +55,12 @@ public class GlobalExceptionHandler {
 
         Map<String, String> errores = new HashMap<>();
         ex.getBindingResult()
-                .getAllErrors()
-                .forEach(error -> {
-                    String campo   = ((FieldError) error).getField();
-                    String mensaje = error.getDefaultMessage();
-                    errores.put(campo, mensaje);
-                });
+          .getAllErrors()
+          .forEach(error -> {
+              String campo   = ((FieldError) error).getField();
+              String mensaje = error.getDefaultMessage();
+              errores.put(campo, mensaje);
+          });
 
         log.debug("Errores de validación: {}", errores);
 

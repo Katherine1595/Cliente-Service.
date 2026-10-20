@@ -1,10 +1,12 @@
 package com.denkitronik.clienteservice.domain.services;
 
+import com.denkitronik.clienteservice.domain.exception.ClienteDuplicadoException;
 import com.denkitronik.clienteservice.domain.exception.ClienteNotFoundException;
 import com.denkitronik.clienteservice.domain.exception.ClienteServiceException;
 import com.denkitronik.clienteservice.domain.entities.Cliente;
 import com.denkitronik.clienteservice.domain.entities.Region;
 import com.denkitronik.clienteservice.domain.repositories.IClienteDao;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -44,8 +46,13 @@ public class ClienteServiceImpl implements IClienteService {
         try {
             // Un POST siempre crea: se ignora el id recibido (evita merge de un id inexistente -> 500)
             cliente.setId(null);
-            return clienteDao.save(cliente);
+            return clienteDao.saveAndFlush(cliente);
         } catch (DataIntegrityViolationException ex) {
+            if (ex.getCause() instanceof ConstraintViolationException cve
+                    && cve.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
+                throw new ClienteDuplicadoException(
+                        "Ya existe un cliente con el email " + cliente.getEmail(), ex);
+            }
             throw new ClienteServiceException(
                     "Error al guardar el cliente: datos duplicados o restricción violada",
                     ex

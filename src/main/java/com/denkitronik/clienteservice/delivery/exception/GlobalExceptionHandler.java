@@ -1,5 +1,6 @@
 package com.denkitronik.clienteservice.delivery.exception;
 
+import com.denkitronik.clienteservice.domain.exception.ClienteDuplicadoException;
 import com.denkitronik.clienteservice.domain.exception.ClienteNotFoundException;
 import com.denkitronik.clienteservice.domain.exception.ClienteServiceException;
 import org.slf4j.Logger;
@@ -31,6 +32,21 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(respuesta);
+    }
+
+    // ── 409 Conflict (email duplicado) ────────────────────────
+    @ExceptionHandler(ClienteDuplicadoException.class)
+    public ResponseEntity<ApiErrorResponse> manejarDuplicado(
+            ClienteDuplicadoException ex) {
+
+        log.warn("Cliente duplicado: {}", ex.getMessage());
+
+        ApiErrorResponse respuesta = new ApiErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(respuesta);
     }
 
     // ── 500 Internal Server Error ─────────────────────────────

@@ -45,8 +45,8 @@ public class ClienteServiceImpl implements IClienteService {
             return clienteDao.save(cliente);
         } catch (DataIntegrityViolationException ex) {
             throw new ClienteServiceException(
-                "Error al guardar el cliente: datos duplicados o restricción violada",
-                ex
+                    "Error al guardar el cliente: datos duplicados o restricción violada",
+                    ex
             );
         }
     }

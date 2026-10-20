@@ -1,4 +1,5 @@
 package com.denkitronik.clienteservice.domain.entities;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

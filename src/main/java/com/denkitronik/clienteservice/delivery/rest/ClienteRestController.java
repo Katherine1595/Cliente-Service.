@@ -77,9 +77,9 @@ public class ClienteRestController {
     private Map<String, Object> construirErrores(BindingResult result) {
         Map<String, Object> errores = new HashMap<>();
         List<String> listaErrores = result.getFieldErrors()
-            .stream()
-            .map(fe -> "El campo '" + fe.getField() + "' " + fe.getDefaultMessage())
-            .collect(Collectors.toList());
+                .stream()
+                .map(fe -> "El campo '" + fe.getField() + "' " + fe.getDefaultMessage())
+                .collect(Collectors.toList());
         errores.put("errors", listaErrores);
         return errores;
     }

@@ -70,7 +70,7 @@ public class ClienteServiceImpl implements IClienteService {
         actual.setEmail(cliente.getEmail());
         actual.setFoto(cliente.getFoto());
         actual.setRegion(cliente.getRegion());
-        return clienteDao.save(actual);
+        return clienteDao.saveAndFlush(actual);
     }
 
     @Override
